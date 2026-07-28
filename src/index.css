@@ -1,0 +1,240 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --neon-pink: #ff2ea6;
+  --neon-cyan: #22e6ff;
+  --neon-yellow: #ffe24a;
+  --neon-purple: #a855f7;
+  --neon-green: #7dff6a;
+}
+
+html {
+  scroll-behavior: initial;
+}
+
+body {
+  background: #050208;
+  color: #f5f0ff;
+  font-family: 'Noto Sans SC', 'Chakra Petch', sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--neon-pink);
+  color: #050208;
+}
+
+.font-display {
+  font-family: 'ZCOOL KuaiLe', 'Noto Sans SC', sans-serif;
+}
+.font-eng {
+  font-family: 'Bungee', 'Chakra Petch', cursive;
+}
+.font-tech {
+  font-family: 'Chakra Petch', 'Noto Sans SC', sans-serif;
+}
+
+/* ---------- 霓虹文字 ---------- */
+.neon-text {
+  text-shadow:
+    0 0 8px currentColor,
+    0 0 24px currentColor,
+    0 0 64px currentColor;
+}
+
+.gradient-text {
+  background: linear-gradient(100deg, #22e6ff 0%, #ff2ea6 45%, #ffe24a 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-pan 5s linear infinite;
+}
+@keyframes gradient-pan {
+  to { background-position: 200% center; }
+}
+
+/* ---------- 故障(Glitch)标题 ---------- */
+.glitch {
+  position: relative;
+}
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.glitch::before {
+  color: #22e6ff;
+  z-index: -1;
+  animation: glitch-shift 2.8s infinite steps(1);
+  opacity: 0.85;
+}
+.glitch::after {
+  color: #ff2ea6;
+  z-index: -2;
+  animation: glitch-shift 2.8s infinite steps(1) reverse;
+  opacity: 0.85;
+}
+@keyframes glitch-shift {
+  0%, 88% { transform: translate(0, 0); clip-path: inset(0 0 0 0); }
+  90% { transform: translate(-4px, 2px); clip-path: inset(10% 0 55% 0); }
+  92% { transform: translate(4px, -2px); clip-path: inset(60% 0 5% 0); }
+  94% { transform: translate(-3px, 0); clip-path: inset(30% 0 40% 0); }
+  96% { transform: translate(3px, 2px); clip-path: inset(5% 0 70% 0); }
+  98%, 100% { transform: translate(0, 0); clip-path: inset(0 0 0 0); }
+}
+
+/* ---------- 霓虹闪烁 ---------- */
+@keyframes neon-flicker {
+  0%, 100% { opacity: 1; }
+  41% { opacity: 1; }
+  42% { opacity: 0.55; }
+  43% { opacity: 1; }
+  45% { opacity: 0.7; }
+  46% { opacity: 1; }
+}
+.flicker {
+  animation: neon-flicker 4s infinite;
+}
+
+/* ---------- 跑马灯 ---------- */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 28s linear infinite;
+}
+.marquee-track.reverse {
+  animation-direction: reverse;
+}
+
+/* ---------- 霓虹卡片 ---------- */
+.neon-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+.neon-card:hover {
+  border-color: var(--card-glow, #ff2ea6);
+  box-shadow:
+    0 0 24px color-mix(in srgb, var(--card-glow, #ff2ea6) 45%, transparent),
+    inset 0 0 24px color-mix(in srgb, var(--card-glow, #ff2ea6) 12%, transparent);
+}
+
+/* 鼠标追光 */
+.spotlight {
+  position: relative;
+  overflow: hidden;
+}
+.spotlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--card-glow, #22e6ff) 18%, transparent),
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+.spotlight:hover::before {
+  opacity: 1;
+}
+
+/* ---------- 扫描线 ---------- */
+.scanlines::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    rgba(0, 0, 0, 0.12) 4px
+  );
+  mix-blend-mode: overlay;
+}
+
+/* ---------- 打字光标 ---------- */
+@keyframes caret-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.type-caret {
+  display: inline-block;
+  width: 0.55em;
+  height: 1.05em;
+  margin-left: 0.1em;
+  vertical-align: -0.15em;
+  background: var(--neon-cyan);
+  box-shadow: 0 0 12px var(--neon-cyan);
+  animation: caret-blink 0.9s infinite;
+}
+
+/* ---------- 滚动提示 ---------- */
+@keyframes scroll-dot {
+  0% { transform: translateY(0); opacity: 1; }
+  70% { transform: translateY(14px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 0; }
+}
+.scroll-dot {
+  animation: scroll-dot 1.8s ease-in-out infinite;
+}
+
+/* ---------- 星星闪烁 ---------- */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* ---------- 按钮 ---------- */
+.btn-neon {
+  position: relative;
+  transition: all 0.3s ease;
+}
+.btn-neon:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow:
+    0 0 30px color-mix(in srgb, currentColor 55%, transparent),
+    0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- 横向滚动区 ---------- */
+.poster-frame {
+  border: 2px solid rgba(255, 255, 255, 0.14);
+  transition: border-color 0.4s, box-shadow 0.4s, transform 0.4s;
+}
+.poster-frame:hover {
+  border-color: var(--neon-pink);
+  box-shadow: 0 0 40px rgba(255, 46, 166, 0.35);
+  transform: translateY(-6px);
+}
+
+/* ---------- 时间轴 ---------- */
+.timeline-line {
+  background: linear-gradient(90deg, #ffe24a, #ff2ea6, #22e6ff);
+  box-shadow: 0 0 16px rgba(255, 46, 166, 0.6);
+}
+
+/* 滚动条 */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #0a0512; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(#22e6ff, #ff2ea6);
+  border-radius: 8px;
+}
