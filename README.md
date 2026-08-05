@@ -7,6 +7,48 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
+## 部署
+
+### 构建
+
+```bash
+npm install
+npm run build
+```
+
+构建产物输出到 `dist/` 目录，使用相对路径（`base: './'`），可部署到任意子路径。
+
+### 本地预览
+
+```bash
+npm run preview
+```
+
+### 部署到静态托管平台
+
+将 `dist/` 目录上传至任意静态文件服务即可：
+
+**Nginx**
+
+```nginx
+server {
+    listen 80;
+    server_name example.com;
+    root /path/to/dist;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+```
+
+**Vercel / Netlify / Cloudflare Pages**
+
+- 构建命令：`npm run build`
+- 输出目录：`dist`
+- 无需额外配置（SPA 路由回退会自动处理）
+
 ## React Compiler
 
 The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
