@@ -7,6 +7,38 @@ gsap.registerPlugin(ScrollTrigger)
 
 const EVENTS = [
   {
+    img: '/posters/6-27活动.JPG',
+    vol: 'LIVE',
+    title: '线下 Vibe Coding 共创局 · 6月场',
+    desc: '首场线下活动，Vibe Coders 正式集结，面对面碰撞灵感。',
+    date: '2025.06.27',
+    color: '#22e6ff',
+  },
+  {
+    img: '/posters/7-18活动.JPG',
+    vol: 'LIVE',
+    title: '线下 Vibe Coding 共创局 · 7月场',
+    desc: '第二场线下共创，更多伙伴加入，更多作品诞生。',
+    date: '2025.07.18',
+    color: '#ff2ea6',
+  },
+  {
+    img: '/posters/7-25华桥城.jpg',
+    vol: 'LIVE',
+    title: '华桥城线下共创活动',
+    desc: '华桥城站 · 现场 Vibe Coding 实战，脑洞全开。',
+    date: '2025.07.25',
+    color: '#a855f7',
+  },
+  {
+    img: '/posters/7-25福田.jpg',
+    vol: 'LIVE',
+    title: '福田线下共创活动',
+    desc: '福田站 · 持续碰创，每次都有新作品出炉。',
+    date: '2025.07.25',
+    color: '#ffe24a',
+  },
+  {
     img: '/posters/gray1.jpg',
     vol: 'VOL.01',
     title: '灰客松 · 线下 Vibe Coding 共创局',
@@ -126,6 +158,11 @@ export default function Events() {
                   className="aspect-[3/4] w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
+              {e.date && (
+                <p className="mt-3 text-center font-tech text-xs tracking-[0.2em] text-white/45">
+                  {e.date}
+                </p>
+              )}
               <div className="mt-5 flex items-start gap-3">
                 <span
                   className="mt-1 shrink-0 rounded-md px-2.5 py-1 font-tech text-xs font-bold tracking-widest"
