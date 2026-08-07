@@ -23,10 +23,10 @@ const EVENTS = [
     color: '#ff2ea6',
   },
   {
-    img: '/posters/7-25华桥城.jpg',
+    img: '/posters/7-25华侨城.jpg',
     vol: 'LIVE',
-    title: '华桥城线下共创活动',
-    desc: '华桥城站 · 现场 Vibe Coding 实战，脑洞全开。',
+    title: '华侨城线下共创活动',
+    desc: '华侨城站 · 现场 Vibe Coding 实战，脑洞全开。',
     date: '2025.07.25',
     color: '#a855f7',
   },
