@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import Lenis from 'lenis'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -14,23 +14,19 @@ import Footer from '@/sections/Footer'
 
 gsap.registerPlugin(ScrollTrigger)
 
-/** 随机星点 */
+const STARS = Array.from({ length: 70 }, (_, i) => ({
+  id: i,
+  top: `${Math.random() * 100}%`,
+  left: `${Math.random() * 100}%`,
+  size: Math.random() * 2.5 + 1,
+  delay: Math.random() * 4,
+  color: ['#fff', '#22e6ff', '#ff2ea6', '#ffe24a'][i % 4] as string,
+}))
+
 function Stars() {
-  const stars = useMemo(
-    () =>
-      Array.from({ length: 70 }, (_, i) => ({
-        id: i,
-        top: `${Math.random() * 100}%`,
-        left: `${Math.random() * 100}%`,
-        size: Math.random() * 2.5 + 1,
-        delay: Math.random() * 4,
-        color: ['#fff', '#22e6ff', '#ff2ea6', '#ffe24a'][i % 4],
-      })),
-    []
-  )
   return (
     <div className="pointer-events-none fixed inset-0 -z-20">
-      {stars.map((s) => (
+      {STARS.map((s) => (
         <span
           key={s.id}
           className="absolute rounded-full"
