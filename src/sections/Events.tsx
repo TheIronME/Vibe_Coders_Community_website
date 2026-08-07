@@ -1,6 +1,8 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import useEmblaCarousel from 'embla-carousel-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useReveal } from '@/hooks/useReveal'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -99,35 +101,22 @@ const SCHEDULE = [
   },
 ]
 
-/** 赛事区 —— GSAP 横向滚动海报长廊 + 一天流程时间轴 */
+/** 赛事区 —— 自动轮播海报长廊 + 一天流程时间轴 */
 export default function Events() {
   const revealRef = useReveal<HTMLElement>(0.12)
-  const hWrapRef = useRef<HTMLDivElement>(null)
-  const trackRef = useRef<HTMLDivElement>(null)
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start' })
+  const [isHovered, setIsHovered] = useState(false)
 
-  // 横向滚动：钉住 section，垂直滚动驱动横移
+  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi])
+  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi])
+
   useEffect(() => {
-    const wrap = hWrapRef.current
-    const track = trackRef.current
-    if (!wrap || !track) return
+    if (!emblaApi) return
+    if (isHovered) return
 
-    const ctx = gsap.context(() => {
-      const getDistance = () => track.scrollWidth - window.innerWidth
-      gsap.to(track, {
-        x: () => -getDistance(),
-        ease: 'none',
-        scrollTrigger: {
-          trigger: wrap,
-          start: 'top top',
-          end: () => `+=${getDistance()}`,
-          pin: true,
-          scrub: 1,
-          invalidateOnRefresh: true,
-        },
-      })
-    }, wrap)
-    return () => ctx.revert()
-  }, [])
+    const id = setInterval(() => emblaApi.scrollNext(), 3000)
+    return () => clearInterval(id)
+  }, [emblaApi, isHovered])
 
   return (
     <section ref={revealRef} className="relative py-28">
@@ -143,47 +132,68 @@ export default function Events() {
         </p>
       </div>
 
-      {/* 横向海报长廊 */}
-      <div ref={hWrapRef} className="mt-16 overflow-hidden">
-        <div ref={trackRef} className="flex w-max items-center gap-8 px-[8vw]">
-          {EVENTS.map((e) => (
-            <div key={e.title} className="group w-[78vw] shrink-0 sm:w-[26rem]">
-              <div
-                className="poster-frame overflow-hidden rounded-2xl"
-                style={{ ['--neon-pink' as string]: e.color }}
-              >
-                <img
-                  src={e.img}
-                  alt={e.title}
-                  className="aspect-[3/4] w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-              </div>
-              {e.date && (
-                <p className="mt-3 text-center font-tech text-xs tracking-[0.2em] text-white/45">
-                  {e.date}
-                </p>
-              )}
-              <div className="mt-5 flex items-start gap-3">
-                <span
-                  className="mt-1 shrink-0 rounded-md px-2.5 py-1 font-tech text-xs font-bold tracking-widest"
-                  style={{ background: e.color, color: '#050208', boxShadow: `0 0 16px ${e.color}88` }}
+      {/* 横向海报长廊 - 自动轮播 */}
+      <div
+        className="relative mt-16"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <button
+          onClick={scrollPrev}
+          className="absolute -left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/50 p-3 text-white/60 backdrop-blur-sm transition hover:bg-black/70 hover:text-white sm:-left-4"
+          aria-label="上一张"
+        >
+          <ChevronLeft className="h-6 w-6" />
+        </button>
+        <button
+          onClick={scrollNext}
+          className="absolute -right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/50 p-3 text-white/60 backdrop-blur-sm transition hover:bg-black/70 hover:text-white sm:-right-4"
+          aria-label="下一张"
+        >
+          <ChevronRight className="h-6 w-6" />
+        </button>
+
+        <div ref={emblaRef} className="overflow-hidden">
+          <div className="flex gap-8" style={{ paddingLeft: '8vw', paddingRight: '8vw' }}>
+            {EVENTS.map((e) => (
+              <div key={e.title} className="group w-[78vw] shrink-0 sm:w-[26rem]">
+                <div
+                  className="poster-frame overflow-hidden rounded-2xl"
+                  style={{ ['--neon-pink' as string]: e.color }}
                 >
-                  {e.vol}
-                </span>
-                <div>
-                  <h3 className="font-display text-xl text-white">{e.title}</h3>
-                  <p className="mt-1 text-sm text-white/55">{e.desc}</p>
+                  <img
+                    src={e.img}
+                    alt={e.title}
+                    className="aspect-[3/4] w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                </div>
+                {e.date && (
+                  <p className="mt-3 text-center font-tech text-xs tracking-[0.2em] text-white/45">
+                    {e.date}
+                  </p>
+                )}
+                <div className="mt-5 flex items-start gap-3">
+                  <span
+                    className="mt-1 shrink-0 rounded-md px-2.5 py-1 font-tech text-xs font-bold tracking-widest"
+                    style={{ background: e.color, color: '#050208', boxShadow: `0 0 16px ${e.color}88` }}
+                  >
+                    {e.vol}
+                  </span>
+                  <div>
+                    <h3 className="font-display text-xl text-white">{e.title}</h3>
+                    <p className="mt-1 text-sm text-white/55">{e.desc}</p>
+                  </div>
                 </div>
               </div>
+            ))}
+            {/* 末尾占位卡 */}
+            <div className="flex w-[60vw] shrink-0 items-center justify-center sm:w-[26rem]">
+              <p className="font-display text-center text-3xl leading-relaxed text-white/70">
+                下一局，
+                <br />
+                <span className="gradient-text text-4xl">等你来开。</span>
+              </p>
             </div>
-          ))}
-          {/* 末尾占位卡 */}
-          <div className="flex w-[60vw] shrink-0 items-center justify-center sm:w-[26rem]">
-            <p className="font-display text-center text-3xl leading-relaxed text-white/70">
-              下一局，
-              <br />
-              <span className="gradient-text text-4xl">等你来开。</span>
-            </p>
           </div>
         </div>
       </div>
